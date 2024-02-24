@@ -1,0 +1,19 @@
+
+# Arctic RGB Control Master
+
+This is a python code to replace https://support.arctic.de/rgb-controller, 
+
+Original software is only available for windows, so I took a stab at trying to make it more OS agnostic.
+
+
+In order to run this code you need to get CH431SER driver ->  best from here https://github.com/juliagoda/CH341SER
+
+
+First run of the script will create config.ini file where you can update configuration. 
+
+In order to get device id run ```ls /dev``` usualy it will be ttyUSBx where x is the number.
+
+This is still in development.
+
+
+Python 3.11.2
