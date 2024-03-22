@@ -16,17 +16,14 @@ def dict2tuple(color):
 
 
 def open_port(port='/dev/ttyUSB0'):
-    try:
-        serial_port = serial.Serial(
-            port=port,  # Change '/dev/ttyUSB0' to your CH340 board port
-            baudrate=250000,
-            bytesize=serial.EIGHTBITS,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            dsrdtr=True
-            )
-    except Exception as ex:
-        print(ex)
+    serial_port = serial.Serial(
+        port=port,  # Change '/dev/ttyUSB0' to your CH340 board port
+        baudrate=250000,
+        bytesize=serial.EIGHTBITS,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        dsrdtr=True
+        )
 
     return serial_port
 

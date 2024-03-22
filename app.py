@@ -9,7 +9,10 @@ from utils import send_data, open_port, dict2tuple
 # ** Global variables**
 color = config_loader("config.ini")
 queue = asyncio.Queue()
+queue.put_nowait(color)
 channel = 'ch1'
+led_start_time = 8
+led_stop_time = 22
 
 
 # ** Async Part **
@@ -26,17 +29,21 @@ async def queue_processor(queue):
     last_message = None
     serial_port = open_port()
     global color
+
     while True:
-        try:
-            message = await asyncio.wait_for(queue.get(), timeout=1)
-            if message:
-                serial_writer(serial_port, message)
-                last_message = message
-                color = message
-       
-        except asyncio.TimeoutError:
-            if last_message:
-                serial_writer(serial_port, last_message)
+        if datetime.now().hour >= led_start_time and datetime.now().hour <= led_stop_time:
+            try:
+                message = await asyncio.wait_for(queue.get(), timeout=1)
+                if message:
+                    serial_writer(serial_port, message)
+                    last_message = message
+                    color = message
+
+            except asyncio.TimeoutError:
+                if last_message:
+                    serial_writer(serial_port, last_message)
+        else:
+            await asyncio.sleep(10)
 
 
 async def async_main():
@@ -92,12 +99,23 @@ def handle_channel_selection(value):
 def handle_save_action(n_clicks):
     config_writer('config.ini', color)
 
+@callback(
+    Output('slider-output', 'children'),
+    Input('time-slider', 'value')
+)
+def handle_led_timer(value):
+    global led_start_time
+    global led_stop_time
+    led_start_time, led_stop_time = value
+    return f"Start: {value[0]}, Stop: {value[1]}"
+
+
 
 if __name__ == '__main__':
     # run all async stuff in another thread
     th = Thread(target=async_main_wrapper)
     th.start()
     # run Dash server
-    app.run(port=9000)
+    app.run(port=9000, debug=False)
     th.join()
     
