@@ -7,12 +7,11 @@ from datetime import datetime
 from utils import send_data, open_port, dict2tuple
 
 # ** Global variables**
-color = config_loader("config.ini")
+color, led_timer = config_loader("config.ini")
 queue = asyncio.Queue()
 queue.put_nowait(color)
 channel = 'ch1'
-led_start_time = 8
-led_stop_time = 22
+led_start_time, led_stop_time = led_timer
 
 
 # ** Async Part **
@@ -59,7 +58,7 @@ def async_main_wrapper():
 
 # *** Dash Part ***:
 app = Dash(__name__)
-app.layout = create_layout()
+app.layout = create_layout(led_timer)
 
 
 # Callback to handle color selection
@@ -97,7 +96,7 @@ def handle_channel_selection(value):
     Input('save', 'n_clicks')
 )
 def handle_save_action(n_clicks):
-    config_writer('config.ini', color)
+    config_writer('config.ini', color, led_start_time, led_stop_time)
 
 @callback(
     Output('slider-output', 'children'),
@@ -108,7 +107,6 @@ def handle_led_timer(value):
     global led_stop_time
     led_start_time, led_stop_time = value
     return f"Start: {value[0]}, Stop: {value[1]}"
-
 
 
 if __name__ == '__main__':

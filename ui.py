@@ -2,7 +2,7 @@ import dash_daq as daq
 from dash import html, dcc
 
 
-def create_layout(initial_color=dict(rgb=dict(r=255, g=0, b=0, a=0))):
+def create_layout(led_timer, initial_color=dict(rgb=dict(r=255, g=0, b=0, a=0))):
     return html.Div([
         html.Div([
             html.Div([
@@ -35,7 +35,7 @@ def create_layout(initial_color=dict(rgb=dict(r=255, g=0, b=0, a=0))):
                     0,
                     23,
                     1,
-                    value=[8, 22],
+                    value=led_timer,
                     id='time-slider'
                 )
 
